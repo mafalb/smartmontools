@@ -369,33 +369,22 @@ update-smart-drivedb: update-smart-drivedb.in config.status
 if INSTALL_INITSCRIPT
 if OS_DARWIN
 initd_DATA = SMART                            \
-	os_darwin/StartupParameters.plist     \
-	os_darwin/English_Localizable.strings
+	os_darwin/at.fasel.at.plist
 
 initd_install_name = SMART
 
 initd_DATA_install = install-initdDATA-darwin
 initd_DATA_uninstall = uninstall-initdDATA-darwin
 
-SMART : os_darwin/SMART.in
+SMART : os_darwin/at.fasel.at.plist.in
 	sed "s|/usr/sbin/|$(sbindir)/|" $< > $@
 
 install-initdDATA-darwin: $(initd_DATA)
-	$(mkinstalldirs) $(DESTDIR)$(initddir)
-	$(mkinstalldirs) $(DESTDIR)$(initddir)/SMART
-	$(mkinstalldirs) $(DESTDIR)$(initddir)/SMART/Resources
-	$(INSTALL_SCRIPT) $(top_builddir)/SMART $(DESTDIR)$(initddir)/SMART
-	$(INSTALL_DATA) $(srcdir)/os_darwin/StartupParameters.plist \
-	    $(DESTDIR)$(initddir)/SMART/StartupParameters.plist
-	for i in English ; do \
-	  RDIR=$(DESTDIR)$(initddir)/SMART/Resources/$${i}.lproj ; \
-	  $(mkinstalldirs) $$RDIR ;\
-	  $(INSTALL_DATA) $(srcdir)/os_darwin/$${i}_Localizable.strings \
-	    $$RDIR/Localizable.strings ; \
-	done
+	$(INSTALL_DATA) $$(srcdir)/os_darwin/at.fasel.at.plist \
+		$(DESTDIR)/Library/LaunchDaemons/at.fasel.at.plist
 
 uninstall-initdDATA-darwin:
-	rm -rf $(DESTDIR)$(initddir)/$(initd_install_name)
+	rm -rf $(DESTDIR)/Library/LaunchDaemons/at.fasel.at.plist
 
 else
 
