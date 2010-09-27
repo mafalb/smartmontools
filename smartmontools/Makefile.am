@@ -269,13 +269,12 @@ EXTRA_DIST = smartd.initd.in                       \
              smartd.conf                           \
              autogen.sh                            \
              update-smart-drivedb.in               \
-             os_darwin/SMART.in                    \
-             os_darwin/StartupParameters.plist     \
-             os_darwin/English_Localizable.strings \
+             os_darwin/at.fasel.smartd.plist.in	   \
              os_win32/installer.nsi                \
              os_win32/syslogevt.c                  \
              os_win32/syslogevt.mc                 \
-             $(docs_DATA)
+             $(docs_DATA)			   \
+	     SMART
 
 CLEANFILES = smartd.conf.5      \
              smartd.conf.4      \
@@ -291,8 +290,7 @@ CLEANFILES = smartd.conf.5      \
              smartd.conf.5.txt  \
              smartd.initd       \
              svnversion.h       \
-             update-smart-drivedb \
-             SMART
+             update-smart-drivedb
 
 if SMARTD_SUFFIX
 CLEANFILES += smartd.conf$(smartd_suffix)
@@ -368,23 +366,22 @@ update-smart-drivedb: update-smart-drivedb.in config.status
 
 if INSTALL_INITSCRIPT
 if OS_DARWIN
-initd_DATA = SMART                            \
-	os_darwin/at.fasel.at.plist
+initd_DATA = SMART
 
 initd_install_name = SMART
 
 initd_DATA_install = install-initdDATA-darwin
 initd_DATA_uninstall = uninstall-initdDATA-darwin
 
-SMART : os_darwin/at.fasel.at.plist.in
+SMART : os_darwin/at.fasel.smartd.plist.in
 	sed "s|/usr/sbin/|$(sbindir)/|" $< > $@
 
 install-initdDATA-darwin: $(initd_DATA)
-	$(INSTALL_DATA) $$(srcdir)/os_darwin/at.fasel.at.plist \
-		$(DESTDIR)/Library/LaunchDaemons/at.fasel.at.plist
+	$(mkinstalldirs) $(DESTDIR)/Library/LaunchDaemons
+	$(INSTALL_SCRIPT) $(top_builddir)/SMART $(DESTDIR)/Library/LaunchDaemons/at.fasel.smartd.plist
 
 uninstall-initdDATA-darwin:
-	rm -rf $(DESTDIR)/Library/LaunchDaemons/at.fasel.at.plist
+	rm -rf $(DESTDIR)/Library/LaunchDaemons/at.fasel.smartd.plist
 
 else
 
